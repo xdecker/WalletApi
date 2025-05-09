@@ -86,7 +86,7 @@ namespace Wallet.Infrastructure.Migrations
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    balance = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     documentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -192,11 +192,78 @@ namespace Wallet.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "MovementsHistory",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    walletId = table.Column<long>(type: "bigint", nullable: false),
+                    amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    type = table.Column<int>(type: "int", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    updatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    deletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    isActive = table.Column<bool>(type: "bit", nullable: false),
+                    createdBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    updatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    deletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MovementsHistory", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_MovementsHistory_Billeteras_walletId",
+                        column: x => x.walletId,
+                        principalTable: "Billeteras",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transferences",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    sourceWalletId = table.Column<long>(type: "bigint", nullable: false),
+                    destinationWalletId = table.Column<long>(type: "bigint", nullable: false),
+                    amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    updatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    deletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    isActive = table.Column<bool>(type: "bit", nullable: false),
+                    createdBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    updatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    deletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transferences", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Transferences_Billeteras_destinationWalletId",
+                        column: x => x.destinationWalletId,
+                        principalTable: "Billeteras",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Transferences_Billeteras_sourceWalletId",
+                        column: x => x.sourceWalletId,
+                        principalTable: "Billeteras",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Billeteras_documentId",
                 table: "Billeteras",
                 column: "documentId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MovementsHistory_walletId",
+                table: "MovementsHistory",
+                column: "walletId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -209,6 +276,16 @@ namespace Wallet.Infrastructure.Migrations
                 name: "IX_RolesClaims_RoleId",
                 table: "RolesClaims",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transferences_destinationWalletId",
+                table: "Transferences",
+                column: "destinationWalletId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transferences_sourceWalletId",
+                table: "Transferences",
+                column: "sourceWalletId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -248,10 +325,13 @@ namespace Wallet.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Billeteras");
+                name: "MovementsHistory");
 
             migrationBuilder.DropTable(
                 name: "RolesClaims");
+
+            migrationBuilder.DropTable(
+                name: "Transferences");
 
             migrationBuilder.DropTable(
                 name: "UsuariosClaims");
@@ -264,6 +344,9 @@ namespace Wallet.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "UsuariosTokens");
+
+            migrationBuilder.DropTable(
+                name: "Billeteras");
 
             migrationBuilder.DropTable(
                 name: "Roles");
