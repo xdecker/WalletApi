@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.Application.DTOs.Wallet;
 using Wallet.Application.Interfaces;
+using Wallet.Application.Services;
 using Wallet.Domain.Entities;
 
 namespace Wallet.API.Controllers
@@ -12,10 +13,12 @@ namespace Wallet.API.Controllers
     public class WalletController : ControllerBase
     {
         private readonly IWalletService _walletService;
+        private readonly ILogger<WalletController> _logger;
 
-        public WalletController(IWalletService walletService)
+        public WalletController(IWalletService walletService, ILogger<WalletController> logger)
         {
             _walletService = walletService;
+            _logger = logger;
         }
 
         
@@ -69,6 +72,7 @@ namespace Wallet.API.Controllers
             }
             catch (Exception ex) 
             {
+                _logger.LogError(ex, "Error creando billetera");
                 return BadRequest(ex.Message);
             }
             
@@ -105,6 +109,7 @@ namespace Wallet.API.Controllers
             }
             catch(Exception ex)
             {
+                _logger.LogError(ex, "Error actualizando billetera");
                 return BadRequest(ex.Message);
             }
             

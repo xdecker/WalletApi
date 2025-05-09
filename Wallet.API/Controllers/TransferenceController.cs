@@ -11,10 +11,12 @@ namespace Wallet.API.Controllers
     public class TransferenceController : ControllerBase
     {
         private readonly ITransferenceService _service;
+        private readonly ILogger<TransferenceController> _logger;
 
-        public TransferenceController(ITransferenceService service)
+        public TransferenceController(ITransferenceService service, ILogger<TransferenceController> logger)
         {
             _service = service;
+            _logger = logger;
         }
 
 
@@ -22,14 +24,23 @@ namespace Wallet.API.Controllers
         [Authorize]
         public async Task<IActionResult> Create([FromBody] CreateTransferenceRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            var result = await _service.CreateAsync(request);
-            if (!result.Success)
-                return BadRequest(new { error = result.ErrorMessage });
+                var result = await _service.CreateAsync(request);
+                if (!result.Success)
+                    return BadRequest(new { error = result.ErrorMessage });
 
-            return Ok(new { message = "Transferencia realizada con éxito." });
+                return Ok(new { message = "Transferencia realizada con éxito." });
+            }
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex, "Error creando transferencia");
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpGet]

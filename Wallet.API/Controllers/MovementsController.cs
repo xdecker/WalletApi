@@ -12,10 +12,12 @@ namespace Wallet.API.Controllers
     public class MovementsController : ControllerBase
     {
         private readonly IMovementService _movementService;
+        private readonly ILogger<MovementsController> _logger;
 
-        public MovementsController(IMovementService movementService)
+        public MovementsController(IMovementService movementService, ILogger<MovementsController> logger)
         {
             _movementService = movementService;
+            _logger = logger;
         }
 
         [HttpGet("wallet/{walletId}")]
@@ -40,24 +42,33 @@ namespace Wallet.API.Controllers
         [Authorize]
         public async Task<IActionResult> Create([FromBody] CreateMovementRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var movement = new MovementHistory
+            try
             {
-                walletId = request.WalletId,
-                amount = request.Amount,
-                type = request.Type,
-                createdAt = DateTime.Now,
-                createdBy = User?.Identity?.Name ?? "SISTEMA"
-            };
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            var result = await _movementService.CreateAsync(movement);
+                var movement = new MovementHistory
+                {
+                    walletId = request.WalletId,
+                    amount = request.Amount,
+                    type = request.Type,
+                    createdAt = DateTime.Now,
+                    createdBy = User?.Identity?.Name ?? "SISTEMA"
+                };
 
-            if (!result.Success)
-                return BadRequest(result.ErrorMessage);
+                var result = await _movementService.CreateAsync(movement);
 
-            return Created("", result.Movement);
+                if (!result.Success)
+                    return BadRequest(result.ErrorMessage);
+
+                return Created("", result.Movement);
+            }
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex, "Error creando movimiento");
+                return BadRequest(ex.Message);
+            }
+ 
         }
     }
 }
