@@ -34,13 +34,13 @@ namespace Wallet.Infrastructure.Repositories
 
             if (!validDocument)
             {
-                throw new Exception("DocumentId is not valid");
+                throw new Exception("DocumentId no es válido");
             }
 
             var documentIsAlreadyUsed = await _context.Billeteras.Where(w => w.isActive && w.documentId == wallet.documentId).AnyAsync();
             if (documentIsAlreadyUsed) 
             {
-                throw new Exception("Another wallet already use the DocumentId");
+                throw new Exception("Otra billetera ya tiene registrado ese documentId");
             }
 
             var createdWallet = await _context.Billeteras.AddAsync(wallet);
@@ -54,7 +54,7 @@ namespace Wallet.Infrastructure.Repositories
 
             if (!validDocument)
             {
-                throw new Exception("DocumentId is not valid");
+                throw new Exception("DocumentId no es válido");
             }
 
             var walletToUpdate = await _context.Billeteras.Where(w => w.isActive && w.id == wallet.id).FirstOrDefaultAsync();
