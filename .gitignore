@@ -1,0 +1,63 @@
+## Build artifacts
+bin/
+obj/
+out/
+
+## Rider
+.idea/
+
+## VS Code
+.vscode/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## OS generated files
+.DS_Store
+Thumbs.db
+
+## Logs
+*.log
+
+
+## Dotnet tools
+*.db
+*.pdb
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## EF Core Migrations snapshots
+**/Migrations/*Designer.cs
+**/Migrations/*Snapshot.cs
+
+## Dependency directories
+packages/
+node_modules/
+
+## Publish output
+publish/
+
+## Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+*.testresults
+
+## Secrets
+secrets.json
+.env
+
+## JetBrains Rider
+*.sln.iml
+
+## Others
+*.ncrunch*
+_ReSharper*/
+*.vspscc
+*.vssscc
+*.vs
