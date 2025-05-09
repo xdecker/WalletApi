@@ -14,6 +14,8 @@ namespace Wallet.Infrastructure
         public DbSet<Billetera> Billeteras { get; set; }
 
         public DbSet<MovementHistory> MovementsHistory { get; set; }
+
+        public DbSet<Transference> Transferences { get; set; } 
  
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
