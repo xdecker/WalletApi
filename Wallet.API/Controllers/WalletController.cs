@@ -25,7 +25,7 @@ namespace Wallet.API.Controllers
             var wallets = await _walletService.GetAllAsync();
             if (wallets == null || !wallets.Any())
             {
-                return NotFound("No wallets found.");
+                return NotFound("No se encontraron billeteras");
             }
 
             return Ok(wallets);
@@ -38,7 +38,7 @@ namespace Wallet.API.Controllers
             var wallet = await _walletService.GetByIdAsync(id);
             if (wallet == null)
             {
-                return NotFound($"Wallet with ID {id} not found.");
+                return NotFound($"Billeta con el ID {id} no fue encontrada.");
             }
 
             return Ok(wallet);
@@ -97,7 +97,7 @@ namespace Wallet.API.Controllers
                 var updated = await _walletService.UpdateAsync(walletToUpdate);
                 if (!updated)
                 {
-                    return NotFound($"Wallet with ID {id} not found.");
+                    return NotFound($"Billetera con ID {id} no fue encontrada.");
                 }
 
                 return NoContent();
@@ -118,7 +118,7 @@ namespace Wallet.API.Controllers
             var deleted = await _walletService.DeleteAsync(id);
             if (!deleted)
             {
-                return NotFound($"Wallet with ID {id} not found.");
+                return NotFound($"Billetera con ID {id} no fue encontrada.");
             }
 
             return NoContent();
