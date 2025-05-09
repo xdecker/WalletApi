@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
 using Wallet.Application.Interfaces;
+using Wallet.Application.Services;
 using Wallet.Domain.Entities;
 using Wallet.Domain.Interfaces;
 using Wallet.Infrastructure;
@@ -98,7 +99,9 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IWalletService, WalletService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IWalletRepository, WalletRepository>();
 
 var app = builder.Build();
 
